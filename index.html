@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Viaje de Nuestro Bebé 👶💖</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Sacramento&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pinkPrimary: '#ff758c',
+                        pinkSoft: '#ff85a1',
+                        pinkLight: '#fff0f3',
+                        pinkDeep: '#d63384',
+                        roseGold: '#e8a598',
+                        goldAccent: '#f39c12'
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        playful: ['Fredoka', 'sans-serif'],
+                        cursive: ['Sacramento', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fef9d7 100%);
+            min-height: 100vh;
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Romantic Panel */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.95);
+            box-shadow: 0 20px 50px rgba(255, 117, 140, 0.25), 0 8px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        .glass-card {
+            background: rgba(255, 240, 243, 0.82);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1.5px solid rgba(255, 133, 161, 0.3);
+            box-shadow: 0 10px 25px rgba(255, 117, 140, 0.1);
+        }
+
+        /* Pulse heartbeat effect */
+        .heartbeat-pulse {
+            animation: pulseBeat 1.3s infinite ease-in-out;
+        }
+
+        @keyframes pulseBeat {
+            0% { transform: scale(1); opacity: 0.95; }
+            15% { transform: scale(1.18); opacity: 1; filter: drop-shadow(0 0 12px rgba(255, 117, 140, 0.8)); }
+            30% { transform: scale(1); opacity: 0.95; }
+            45% { transform: scale(1.12); opacity: 1; }
+            70% { transform: scale(1); opacity: 0.95; }
+        }
+
+        /* Floating particles canvas */
+        #heartCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Range Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 12px;
+            cursor: pointer;
+            background: linear-gradient(90deg, #ff85a1 0%, #ff758c 50%, #d63384 100%);
+            border-radius: 20px;
+            border: 2px solid #ffffff;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -10px;
+            box-shadow: 0 4px 12px rgba(214, 51, 132, 0.4), 0 0 0 4px #ff758c;
+            transition: all 0.2s ease;
+        }
+
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 6px 18px rgba(214, 51, 132, 0.6), 0 0 0 5px #d63384;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen text-gray-800 antialiased pb-12">
+
+    <canvas id="heartCanvas"></canvas>
+
+    <!-- Main Wrapper -->
+    <div class="relative z-10 max-w-4xl mx-auto px-4 py-8 md:py-12">
+
+        <header class="text-center mb-8">
+            <div class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/90 backdrop-blur-md border border-pinkPrimary/40 shadow-md mb-4">
+                <i class="fa-solid fa-heart text-pinkPrimary animate-bounce"></i>
+                <span class="text-xs md:text-sm font-bold text-pinkDeep uppercase tracking-wider">Para mi amor y nuestro bebé</span>
+                <i class="fa-solid fa-sparkles text-pinkPrimary"></i>
+            </div>
+            <h1 class="text-3xl md:text-5xl lg:text-6xl font-playful font-bold text-gray-900 tracking-tight drop-shadow-sm">
+                El Crecimiento del <span class="text-transparent bg-clip-text bg-gradient-to-r from-pinkDeep via-pinkPrimary to-pinkSoft" id="headerBabyName">Bebé de Jazmin y Luca</span> 💖
+            </h1>
+            <p class="text-pinkDeep font-cursive text-2xl md:text-3xl mt-1">
+                Cada día me enamoro más de la familia que estamos construyendo. Gracias por llevar adentro al amor de nuestras vidas. Los amo más que a nada en el mundo a los dos.
+            </p>
+        </header>
+
+        <main class="glass-panel rounded-3xl p-6 md:p-10 mb-8 relative overflow-hidden transition-all duration-500">
+            
+            <!-- Soft Pink Glow Accents -->
+            <div class="absolute -top-20 -left-20 w-64 h-64 bg-pinkSoft/30 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-pinkPrimary/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <!-- Top Controls Row -->
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-8 pb-6 border-b border-pinkSoft/30">
+                <div class="w-full md:w-2/3 space-y-3">
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <span class="text-xs uppercase font-bold text-pinkDeep tracking-wider">Línea de Tiempo del Embarazo</span>
+                            <h2 class="text-2xl md:text-3xl font-playful font-bold text-pinkDeep flex items-center gap-2">
+                                <span id="weekTitleNumber">Semana 5</span>
+                                <span id="weekBadge" class="text-xs px-3 py-1 rounded-full bg-pinkPrimary text-white font-bold shadow-sm">¡Nuestra Semana Actual! ❤️</span>
+                            </h2>
+                        </div>
+                        <span id="trimesterBadge" class="text-xs md:text-sm font-bold px-3.5 py-1.5 rounded-full bg-pinkLight text-pinkDeep border border-pinkSoft/40">Primer Trimestre</span>
+                    </div>
+
+                    <!-- Interactive Slider -->
+                    <div class="relative pt-2">
+                        <input type="range" id="weekSlider" min="4" max="40" value="5" class="w-full">
+                        <div class="flex justify-between text-xs text-pinkDeep font-bold mt-1">
+                            <span>Semana 4</span>
+                            <span>Sem 12</span>
+                            <span>Sem 20</span>
+                            <span>Sem 30</span>
+                            <span>Sem 40</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personalize Button -->
+                <div class="w-full md:w-auto flex justify-center md:justify-end">
+                    <button onclick="toggleCustomModal()" class="w-full md:w-auto px-5 py-3 rounded-2xl bg-white hover:bg-pinkLight text-pinkDeep font-bold text-sm shadow-md hover:shadow-lg border border-pinkSoft/50 flex items-center justify-center gap-2 transition-all">
+                        <i class="fa-solid fa-wand-magic-sparkles text-pinkPrimary"></i>
+                        <span>Personalizar Mensaje</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-8">
+                
+                <!-- Visual Fruit / Seed Display -->
+                <div class="lg:col-span-5 flex flex-col items-center text-center">
+                    <div class="relative w-72 h-72 md:w-80 md:h-80 rounded-full glass-card flex flex-col items-center justify-center p-6 border-4 border-white shadow-2xl transition-transform duration-500 hover:scale-105 group">
+                        
+                        <div class="absolute inset-0 rounded-full bg-gradient-to-br from-pinkLight via-pinkSoft/20 to-pinkPrimary/20 blur-xl -z-10"></div>
+
+                        <!-- Fruit Emoji Icon -->
+                        <div id="comparisonEmoji" class="text-6xl md:text-7xl mt-1 mb-2 drop-shadow-md transition-transform duration-300 transform group-hover:scale-110">
+                            🌱
+                        </div>
+
+                        <div class="text-[11px] uppercase font-bold text-pinkDeep tracking-widest">Tu bebé es tan grande como</div>
+                        <h3 id="comparisonName" class="text-xl md:text-2xl font-playful font-bold text-pinkDeep leading-tight mt-1">
+                            Una Semilla de Sésamo
+                        </h3>
+
+                        <!-- Heartbeat pulse -->
+                        <div id="heartbeatBadge" class="mt-3 inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-pinkPrimary text-white text-xs font-bold shadow-md heartbeat-pulse">
+                            <i class="fa-solid fa-heart text-white"></i>
+                            <span>Corazoncito Latiendo Rápido</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Size & Weight Metric Cards -->
+                <div class="lg:col-span-7 space-y-5">
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="glass-card p-4 rounded-2xl border border-white flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-pinkDeep text-2xl font-bold shadow-sm">
+                                📏
+                            </div>
+                            <div>
+                                <div class="text-xs text-pinkDeep font-semibold">Tamaño Aprox.</div>
+                                <div id="sizeValue" class="text-xl md:text-2xl font-bold text-gray-800">2 mm</div>
+                            </div>
+                        </div>
+
+                        <div class="glass-card p-4 rounded-2xl border border-white flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-pinkDeep text-2xl font-bold shadow-sm">
+                                ⚖️
+                            </div>
+                            <div>
+                                <div class="text-xs text-pinkDeep font-semibold">Peso Aprox.</div>
+                                <div id="weightValue" class="text-xl md:text-2xl font-bold text-gray-800">&lt; 0.5 g</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Real Scale 1:1 Visualizer -->
+                    <div class="glass-card p-5 rounded-2xl border border-white space-y-3">
+                        <div class="flex justify-between items-center text-xs font-bold text-pinkDeep">
+                            <span class="flex items-center gap-1.5">
+                                <i class="fa-solid fa-eye text-pinkPrimary"></i> Visualizador de Tamaño Real en Pantalla (1:1)
+                            </span>
+                            <span id="scaleLabel" class="text-pinkDeep font-bold bg-white px-2.5 py-0.5 rounded-full border border-pinkSoft/30">2 milímetros</span>
+                        </div>
+                        
+                        <div class="relative w-full h-16 bg-white/90 rounded-xl border border-pinkSoft/40 overflow-hidden flex items-center justify-center px-4 shadow-inner">
+                            <div class="flex items-center justify-center gap-3">
+                                <span class="text-xs text-gray-600 font-bold">Tamaño de tu bebé hoy:</span>
+                                <div id="realScaleDot" class="bg-gradient-to-r from-pinkPrimary to-pinkDeep rounded-full transition-all duration-500 shadow-md flex items-center justify-center text-white text-[10px] font-bold" style="width: 12px; height: 12px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Button -->
+                    <div class="pt-2">
+                        <button onclick="triggerLoveCelebration()" class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-pinkPrimary via-pinkDeep to-pinkPrimary text-white font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group">
+                            <i class="fa-solid fa-heart text-white group-hover:animate-ping"></i>
+                            <span>¡Enviar Lluvia de Amor a Mamá! 💕</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-pinkSoft/30">
+                
+                <div class="flex flex-wrap gap-2 mb-6 border-b border-pinkSoft/20 pb-3">
+                    <button id="tabBtn1" onclick="switchTab(1)" class="tab-btn px-5 py-2.5 rounded-xl font-bold text-sm transition-all bg-pinkDeep text-white shadow-sm">
+                        <i class="fa-solid fa-baby mr-1.5"></i> Desarrollo de la Semana
+                    </button>
+                    <button id="tabBtn2" onclick="switchTab(2)" class="tab-btn px-5 py-2.5 rounded-xl font-bold text-sm transition-all text-pinkDeep hover:bg-white/60">
+                        <i class="fa-solid fa-heart-pulse mr-1.5"></i> Latidos & Ciencia
+                    </button>
+                    <button id="tabBtn3" onclick="switchTab(3)" class="tab-btn px-5 py-2.5 rounded-xl font-bold text-sm transition-all text-pinkDeep hover:bg-white/60">
+                        <i class="fa-solid fa-envelope-heart mr-1.5"></i> Carta de Amor para Mamá
+                    </button>
+                </div>
+
+                <!-- Tab 1: Development -->
+                <div id="tabContent1" class="tab-content space-y-4">
+                    <div class="glass-card p-6 rounded-2xl border border-white">
+                        <h4 class="text-lg font-playful font-bold text-pinkDeep mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-seedling text-pinkPrimary"></i>
+                            <span>¿Qué está sucediendo dentro de la pancita?</span>
+                        </h4>
+                        <p id="babyDevelopmentText" class="text-gray-700 leading-relaxed text-base">
+                            En la **Semana 5**, tu bebé es una diminuta semillita de sésamo de unos 2 milímetros. Aunque es súper pequeñito, es una semana de grandes milagros: el tubo neural (que formará su cerebro y columna vertebral) se está cerrando y su corazoncito ha comenzado a dar sus primeros latiditos.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div class="p-4 bg-white/90 rounded-2xl border border-pinkSoft/30 flex items-start gap-3 shadow-sm">
+                            <span class="text-2xl">🧠</span>
+                            <div>
+                                <div class="text-xs font-bold text-pinkDeep">Sistema Nervioso</div>
+                                <div class="text-xs text-gray-600">Se forma el tubito neural para el cerebro y la médula.</div>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-white/90 rounded-2xl border border-pinkSoft/30 flex items-start gap-3 shadow-sm">
+                            <span class="text-2xl">💓</span>
+                            <div>
+                                <div class="text-xs font-bold text-pinkDeep">Primeros Latidos</div>
+                                <div class="text-xs text-gray-600">Su corazoncito primitivo comienza a contraerse.</div>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-white/90 rounded-2xl border border-pinkSoft/30 flex items-start gap-3 shadow-sm">
+                            <span class="text-2xl">🛡️</span>
+                            <div>
+                                <div class="text-xs font-bold text-pinkDeep">Nutrición & Amor</div>
+                                <div class="text-xs text-gray-600">La placenta y vesícula vitelina lo alimentan día a día.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Medical Details -->
+                <div id="tabContent2" class="tab-content hidden space-y-4">
+                    <div class="glass-card p-6 rounded-2xl border border-white">
+                        <h4 class="text-lg font-playful font-bold text-pinkDeep mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-heart-pulse text-red-500"></i>
+                            <span>El Latido del Corazón en la Semana 5</span>
+                        </h4>
+                        <p id="medicalText" class="text-gray-700 leading-relaxed text-base">
+                            A las 5 semanas de gestación, el sistema circulatorio es el primer sistema de órganos en funcionar. Las células cardíacas primitivas empiezan a latir de manera rítmica e ininterrumpida. Es una fuerza de vida asombrosa en solo 2 milímetros.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Personalized Letter -->
+                <div id="tabContent3" class="tab-content hidden space-y-4">
+                    <div class="glass-card p-6 rounded-2xl border border-pinkSoft/50 bg-gradient-to-r from-pinkLight to-white relative">
+                        <i class="fa-solid fa-quote-left text-pinkPrimary/20 text-6xl absolute -top-2 -left-2"></i>
+                        <h4 class="text-lg font-playful font-bold text-pinkDeep mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-heart text-pinkPrimary"></i>
+                            <span>Para el Amor de mi Vida y Futura Mamá</span>
+                        </h4>
+                        <p id="customLoveMessage" class="font-cursive text-3xl md:text-4xl text-pinkDeep leading-relaxed">
+                            "Mi amor, apenas lleva 5 semanas con nosotros y ya me tiene completamente enamorado. Gracias por llevar este hermoso milagro dentro de ti. Los amo con todo mi corazón."
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mt-10 pt-6 border-t border-pinkSoft/30">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-bold uppercase tracking-wider text-pinkDeep">Progreso Total del Embarazo (40 Semanas)</span>
+                    <span id="progressPercentage" class="text-xs font-bold text-pinkDeep bg-white px-3 py-0.5 rounded-full border border-pinkSoft/40">12.5% completado</span>
+                </div>
+                
+                <div class="w-full h-4 bg-white/90 rounded-full overflow-hidden p-0.5 border border-pinkSoft/40 shadow-inner">
+                    <div id="progressBarFill" class="h-full bg-gradient-to-r from-pinkSoft via-pinkPrimary to-pinkDeep rounded-full transition-all duration-500" style="width: 12.5%;"></div>
+                </div>
+
+                <div class="flex justify-between text-[11px] text-pinkDeep font-semibold mt-2">
+                    <span class="font-bold underline">Sem 5 (¡Semana Actual!)</span>
+                    <span>Sem 12 (1er Trimestre)</span>
+                    <span>Sem 24 (Viabilidad)</span>
+                    <span>Sem 37 (Término)</span>
+                    <span>Sem 40 (Llegada)</span>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="text-center text-xs text-pinkDeep bg-white/70 backdrop-blur-md p-4 rounded-2xl border border-white/60 shadow-sm space-y-1">
+            <p class="font-semibold">Los amo, amo mis bebes y ahora mi pequeña familia 💕✨</p>
+        </footer>
+
+    </div>
+
+    <div id="customModal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="glass-panel bg-white/95 rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl border border-white transform scale-95 transition-transform duration-300" id="modalCard">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-xl font-playful font-bold text-pinkDeep flex items-center gap-2">
+                    <i class="fa-solid fa-heart-circle-plus text-pinkPrimary"></i>
+                    <span>Personalizar Dedicatoria</span>
+                </h3>
+                <button onclick="toggleCustomModal()" class="w-8 h-8 rounded-full bg-pinkLight text-pinkDeep flex items-center justify-center hover:bg-pinkSoft/40 transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-pinkDeep uppercase mb-1">Nombre o Apodo del Bebé</label>
+                    <input type="text" id="inputBabyName" value="Nuestra Semillita" class="w-full px-4 py-2.5 rounded-xl border border-pinkSoft/50 focus:border-pinkPrimary focus:ring-2 focus:ring-pinkLight outline-none transition-all text-sm font-medium">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-pinkDeep uppercase mb-1">Mensaje para la Futura Mamá</label>
+                    <textarea id="inputLoveMessage" rows="3" class="w-full px-4 py-2.5 rounded-xl border border-pinkSoft/50 focus:border-pinkPrimary focus:ring-2 focus:ring-pinkLight outline-none transition-all text-sm font-medium" placeholder="Escribe un mensaje de amor..."></textarea>
+                </div>
+
+                <button onclick="saveCustomizations()" class="w-full py-3 rounded-xl bg-pinkPrimary hover:bg-pinkDeep text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2">
+                    <span>Guardar con Amor 💕</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Pregnancy Data Dictionary
+        const pregnancyData = {
+            4: {
+                name: "Semilla de Amapola",
+                emoji: "🌱",
+                size: "1 mm",
+                weight: "< 0.1 g",
+                scaleMm: 1,
+                heartbeat: false,
+                desc: "El blastocisto se ha implantado en el útero. Las células comienzan a multiplicarse y organizarse con gran rapidez.",
+                medical: "Formación de las capas embrionarias primarias que darán origen a los órganos.",
+                trimester: "Primer Trimestre"
+            },
+            5: {
+                name: "Semilla de Sésamo",
+                emoji: "🌱",
+                size: "2 mm",
+                weight: "< 0.5 g",
+                scaleMm: 2,
+                heartbeat: true,
+                desc: "¡Tu bebé mide aprox. 2 mm! Se está cerrando su tubo neural (cerebro y médula) y su corazoncito primitivo ya late con fuerza.",
+                medical: "Cierre del tubo neural y formación del sistema circulatorio primitivo funcional.",
+                trimester: "Primer Trimestre"
+            },
+            6: {
+                name: "Semilla de Lenteja",
+                emoji: "🫘",
+                size: "5 mm",
+                weight: "< 1 g",
+                scaleMm: 5,
+                heartbeat: true,
+                desc: "El corazón late velozmente. Empiezan a insinuarse los brotecitos que se convertirán en sus brazos y piernas.",
+                medical: "Incipiente desarrollo de las fosas ópticas y arcos branquiales faciales.",
+                trimester: "Primer Trimestre"
+            },
+            7: {
+                name: "Un Arándano",
+                emoji: "🫐",
+                size: "1.2 cm",
+                weight: "1 g",
+                scaleMm: 12,
+                heartbeat: true,
+                desc: "El cerebro se desarrolla aceleradamente. Los codos y pequeños surcos de los dedos empiezan a definirse.",
+                medical: "Generación acelerada de neuronas en los hemisferios cerebrales.",
+                trimester: "Primer Trimestre"
+            },
+            8: {
+                name: "Una Frambuesa",
+                emoji: "🍓",
+                size: "1.6 cm",
+                weight: "1.5 g",
+                scaleMm: 16,
+                heartbeat: true,
+                desc: "Los deditos de sus manos y pies comienzan a separarse. Sus párpados cubren casi por completo sus ojitos.",
+                medical: "Desaparición de la cola embrionaria y desarrollo articular de codos y rodillas.",
+                trimester: "Primer Trimestre"
+            },
+            9: {
+                name: "Una Uva",
+                emoji: "🍇",
+                size: "2.3 cm",
+                weight: "2 g",
+                scaleMm: 23,
+                heartbeat: true,
+                desc: "Pasa oficialmente de embrión a feto. Todos sus órganos esenciales están presentes y en proceso de maduración.",
+                medical: "Movimientos espontáneos involuntarios derivados del desarrollo muscular básico.",
+                trimester: "Primer Trimestre"
+            },
+            10: {
+                name: "Una Frutilla",
+                emoji: "🍓",
+                size: "3.1 cm",
+                weight: "4 g",
+                scaleMm: 31,
+                heartbeat: true,
+                desc: "Puede flexionar sus articulaciones. Sus órganos vitales trabajan juntos en armonía.",
+                medical: "Inicio de osificación ósea e inicio de brotes pilosos en la piel.",
+                trimester: "Primer Trimestre"
+            },
+            12: {
+                name: "Un Limón",
+                emoji: "🍋",
+                size: "5.4 cm",
+                weight: "14 g",
+                scaleMm: 54,
+                heartbeat: true,
+                desc: "Abre y cierra sus manitas. Sus reflejos corporales se perfeccionan semana a semana.",
+                medical: "Producción de glóbulos en el bazo feto y perfil facial completamente formado.",
+                trimester: "Primer Trimestre"
+            },
+            16: {
+                name: "Una Palta (Aguacate)",
+                emoji: "🥑",
+                size: "11.6 cm",
+                weight: "100 g",
+                scaleMm: 116,
+                heartbeat: true,
+                desc: "Mueve sus ojos de lado a lado. Su corazoncito bombea litros de sangre nutriendo todo su cuerpo.",
+                medical: "Desarrollo del sistema auditivo interno; empieza a reconocer la voz materna.",
+                trimester: "Segundo Trimestre"
+            },
+            20: {
+                name: "Una Banana",
+                emoji: "🍌",
+                size: "25 cm",
+                weight: "300 g",
+                scaleMm: 250,
+                heartbeat: true,
+                desc: "¡La mitad del camino recorrido! Ya puede escuchar los latidos y la voz de sus papás.",
+                medical: "Especialización de los 5 sentidos y acumulación de vernix caseosa protectora.",
+                trimester: "Segundo Trimestre"
+            },
+            30: {
+                name: "Un Coco",
+                emoji: "🥥",
+                size: "40 cm",
+                weight: "1.3 kg",
+                scaleMm: 400,
+                heartbeat: true,
+                desc: "Abre los ojos y distingue luces y sombras desde el interior de la pancita.",
+                medical: "Desarrollo acelerado del tejido pulmonar y pliegues del córtex cerebral.",
+                trimester: "Tercer Trimestre"
+            },
+            40: {
+                name: "Una Sandía",
+                emoji: "🍉",
+                size: "51 cm",
+                weight: "3.4 kg",
+                scaleMm: 510,
+                heartbeat: true,
+                desc: "¡Totalmente listo para nacer y conocer a sus papás! El día más esperado está cerca.",
+                medical: "Reflejos de succión y respiración maduros para la vida extrauterina.",
+                trimester: "Tercer Trimestre"
+            }
+        };
+
+        // DOM Elements
+        const slider = document.getElementById('weekSlider');
+        const weekTitleNumber = document.getElementById('weekTitleNumber');
+        const weekBadge = document.getElementById('weekBadge');
+        const trimesterBadge = document.getElementById('trimesterBadge');
+        const comparisonEmoji = document.getElementById('comparisonEmoji');
+        const comparisonName = document.getElementById('comparisonName');
+        const sizeValue = document.getElementById('sizeValue');
+        const weightValue = document.getElementById('weightValue');
+        const scaleLabel = document.getElementById('scaleLabel');
+        const realScaleDot = document.getElementById('realScaleDot');
+        const babyDevelopmentText = document.getElementById('babyDevelopmentText');
+        const medicalText = document.getElementById('medicalText');
+        const heartbeatBadge = document.getElementById('heartbeatBadge');
+        const progressBarFill = document.getElementById('progressBarFill');
+        const progressPercentage = document.getElementById('progressPercentage');
+
+        function updateWeekData(week) {
+            const availableWeeks = Object.keys(pregnancyData).map(Number).sort((a,b) => a - b);
+            let closestWeek = availableWeeks[0];
+            for (let w of availableWeeks) {
+                if (week >= w) closestWeek = w;
+            }
+
+            const info = pregnancyData[closestWeek];
+
+            weekTitleNumber.textContent = `Semana ${week}`;
+            if (week == 5) {
+                weekBadge.classList.remove('hidden');
+            } else {
+                weekBadge.classList.add('hidden');
+            }
+
+            trimesterBadge.textContent = info.trimester;
+            comparisonEmoji.textContent = info.emoji;
+            comparisonName.textContent = info.name;
+            sizeValue.textContent = info.size;
+            weightValue.textContent = info.weight;
+
+            scaleLabel.textContent = info.size;
+            let displaySize = Math.max(6, Math.min(info.scaleMm * 0.8, 55));
+            realScaleDot.style.width = `${displaySize}px`;
+            realScaleDot.style.height = `${displaySize}px`;
+
+            if (info.heartbeat) {
+                heartbeatBadge.classList.remove('hidden');
+            } else {
+                heartbeatBadge.classList.add('hidden');
+            }
+
+            babyDevelopmentText.innerHTML = info.desc;
+            medicalText.innerHTML = info.medical;
+
+            const percent = ((week / 40) * 100).toFixed(1);
+            progressBarFill.style.width = `${percent}%`;
+            progressPercentage.textContent = `${percent}% completado`;
+        }
+
+        slider.addEventListener('input', (e) => updateWeekData(e.target.value));
+
+        // Tab Navigation
+        function switchTab(tabIndex) {
+            for (let i = 1; i <= 3; i++) {
+                const tabContent = document.getElementById(`tabContent${i}`);
+                const tabBtn = document.getElementById(`tabBtn${i}`);
+                
+                if (i === tabIndex) {
+                    tabContent.classList.remove('hidden');
+                    tabBtn.className = "tab-btn px-5 py-2.5 rounded-xl font-bold text-sm transition-all bg-pinkDeep text-white shadow-sm";
+                } else {
+                    tabContent.classList.add('hidden');
+                    tabBtn.className = "tab-btn px-5 py-2.5 rounded-xl font-bold text-sm transition-all text-pinkDeep hover:bg-white/60";
+                }
+            }
+        }
+
+        // Customization Modal Logic
+        function toggleCustomModal() {
+            const modal = document.getElementById('customModal');
+            const card = document.getElementById('modalCard');
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    card.classList.remove('scale-95');
+                }, 10);
+            } else {
+                modal.classList.add('opacity-0');
+                card.classList.add('scale-95');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            }
+        }
+
+        function saveCustomizations() {
+            const name = document.getElementById('inputBabyName').value.trim();
+            const message = document.getElementById('inputLoveMessage').value.trim();
+
+            if (name) document.getElementById('headerBabyName').textContent = name;
+            if (message) document.getElementById('customLoveMessage').textContent = `"${message}"`;
+
+            toggleCustomModal();
+            triggerLoveCelebration();
+        }
+
+        function triggerLoveCelebration() {
+            confetti({
+                particleCount: 100,
+                spread: 120,
+                origin: { y: 0.6 },
+                colors: ['#ff758c', '#ff85a1', '#fff0f3', '#d63384', '#ffffff', '#f39c12']
+            });
+        }
+
+        // Floating Hearts Canvas Background
+        const heartCanvas = document.getElementById('heartCanvas');
+        const hCtx = heartCanvas.getContext('2d');
+
+        function resizeHeartCanvas() {
+            heartCanvas.width = window.innerWidth;
+            heartCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeHeartCanvas);
+        resizeHeartCanvas();
+
+        class FloatingHeart {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * heartCanvas.width;
+                this.y = heartCanvas.height + 20;
+                this.size = Math.random() * 15 + 10;
+                this.speed = Math.random() * 1.5 + 0.5;
+                this.opacity = Math.random() * 0.5 + 0.2;
+                this.swing = Math.random() * 0.05 - 0.025;
+                this.angle = 0;
+            }
+
+            update() {
+                this.y -= this.speed;
+                this.angle += this.swing;
+                this.x += Math.sin(this.angle) * 0.5;
+
+                if (this.y < -30) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                hCtx.save();
+                hCtx.translate(this.x, this.y);
+                hCtx.globalAlpha = this.opacity;
+                hCtx.fillStyle = '#ff758c';
+
+                // Draw heart shape
+                hCtx.beginPath();
+                let topCurveHeight = this.size * 0.3;
+                hCtx.moveTo(0, topCurveHeight);
+                hCtx.bezierCurveTo(0, 0, -this.size / 2, 0, -this.size / 2, topCurveHeight);
+                hCtx.bezierCurveTo(-this.size / 2, (this.size + topCurveHeight) / 2, 0, this.size, 0, this.size);
+                hCtx.bezierCurveTo(0, this.size, this.size / 2, (this.size + topCurveHeight) / 2, this.size / 2, topCurveHeight);
+                hCtx.bezierCurveTo(this.size / 2, 0, 0, 0, 0, topCurveHeight);
+                hCtx.closePath();
+                hCtx.fill();
+
+                hCtx.restore();
+            }
+        }
+
+        const floatingHearts = Array.from({ length: 25 }, () => new FloatingHeart());
+
+        function animateHearts() {
+            hCtx.clearRect(0, 0, heartCanvas.width, heartCanvas.height);
+            floatingHearts.forEach(heart => {
+                heart.update();
+                heart.draw();
+            });
+            requestAnimationFrame(animateHearts);
+        }
+
+        window.onload = function() {
+            animateHearts();
+            updateWeekData(5); // Default to Week 5
+        };
+    </script>
+</body>
+</html>
